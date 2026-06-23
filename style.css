@@ -1,0 +1,861 @@
+/* ==========================================================================
+   도둑맞은 김소연 - 독서 골든벨 & 게임 스타일시트
+   ========================================================================== */
+
+/* 1. Global Reset & Variables */
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --border-color: rgba(255, 255, 255, 0.1);
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  
+  /* Point Colors */
+  --color-amber: #f59e0b;
+  --color-amber-hover: #d97706;
+  --color-coral: #ff6b6b;
+  --color-success: #10b981;
+  --color-success-hover: #059669;
+  --color-info: #3b82f6;
+  --color-danger: #ef4444;
+  
+  /* Font Family */
+  --font-main: 'Noto Sans KR', sans-serif;
+  --font-accent: 'Jua', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+    radial-gradient(at 150% 150%, rgba(245, 158, 11, 0.12) 0px, transparent 50%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Scrollbar Style */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 2. Layout Structure */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header styling */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-area i {
+  font-size: 2.2rem;
+  color: var(--color-amber);
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));
+}
+
+.logo-area h1 {
+  font-family: var(--font-accent);
+  font-size: 2rem;
+  letter-spacing: 1px;
+  background: linear-gradient(to right, #ffffff, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo-area .subtitle {
+  font-size: 1rem;
+  font-family: var(--font-main);
+  font-weight: 300;
+  color: var(--text-secondary);
+  margin-left: 10px;
+  -webkit-text-fill-color: var(--text-secondary); /* Override gradient clip */
+}
+
+/* Navigation buttons */
+.app-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-family: var(--font-main);
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.nav-btn.active {
+  background: linear-gradient(135deg, var(--color-amber), #d97706);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+/* Main Area */
+.app-main {
+  flex: 1;
+  padding: 30px 0;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Common Card UI */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* 3. Golden Bell Grid Layout */
+.goldenbell-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 20px;
+}
+
+/* 4. Quiz Area (Left side) */
+.quiz-container {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 480px;
+  border: 2px solid rgba(245, 158, 11, 0.2);
+}
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.badge {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: white;
+}
+
+.quiz-num {
+  font-family: var(--font-accent);
+  color: var(--color-amber);
+  font-size: 1.2rem;
+}
+
+.quiz-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.question-text {
+  font-family: var(--font-main);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  word-break: keep-all;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  max-width: 90%;
+}
+
+/* Quiz choices (OX or Multiple) */
+.quiz-choices {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+.choice-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: var(--font-accent);
+  font-size: 2.5rem;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.choice-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.choice-btn.ox-o {
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.4);
+}
+.choice-btn.ox-o:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: #ff6b6b;
+}
+
+.choice-btn.ox-x {
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+.choice-btn.ox-x:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Multiple choice UI */
+.quiz-choices-multiple {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  width: 90%;
+}
+
+.choice-mult-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-family: var(--font-main);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.choice-mult-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-amber);
+}
+
+.choice-mult-btn .num-badge {
+  background: var(--color-amber);
+  color: #000;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Answer Box styles */
+.answer-box {
+  background: rgba(16, 185, 129, 0.1);
+  border: 2px solid var(--color-success);
+  border-radius: 16px;
+  padding: 20px;
+  width: 90%;
+  margin-top: 10px;
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.answer-box.hidden {
+  display: none !important;
+}
+
+.answer-label {
+  font-family: var(--font-accent);
+  color: var(--color-success);
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.answer-text {
+  font-family: var(--font-accent);
+  font-size: 2.2rem;
+  color: #fff;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.explanation-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+/* Quiz footer navigation */
+.quiz-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+}
+
+.quiz-nav-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.quiz-nav-btn:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.quiz-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-success), var(--color-success-hover));
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  font-family: var(--font-accent);
+  font-size: 1.3rem;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* 5. Timer Component (Right Top) */
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-container h2 {
+  font-family: var(--font-accent);
+  font-size: 1.3rem;
+  align-self: flex-start;
+  margin-bottom: 15px;
+}
+
+.timer-display {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 10px 0;
+}
+
+.timer-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-elapsed {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 6px;
+}
+
+.timer-progress {
+  fill: none;
+  stroke: var(--color-coral);
+  stroke-width: 6px;
+  stroke-dasharray: 283; /* 2 * PI * r (2 * 3.1415 * 45) */
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.timer-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-accent);
+  font-size: 2.8rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.timer-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.btn-timer-preset {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-timer-preset:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.btn-timer-preset.active {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: var(--color-coral);
+  color: var(--color-coral);
+  font-weight: bold;
+}
+
+.timer-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-action {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.btn-success {
+  background: var(--color-success);
+  color: #fff;
+}
+.btn-success:hover {
+  background: var(--color-success-hover);
+}
+
+.btn-warning {
+  background: var(--color-amber);
+  color: #000;
+}
+.btn-warning:hover {
+  background: var(--color-amber-hover);
+}
+
+.btn-danger {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+.btn-danger:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-coral);
+}
+
+.btn-action:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* 6. Chance Cards (Right Bottom) */
+.chance-container h2 {
+  font-family: var(--font-accent);
+  font-size: 1.3rem;
+  margin-bottom: 5px;
+}
+
+.chance-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+}
+
+.chance-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.chance-card-wrapper {
+  perspective: 1000px;
+  aspect-ratio: 3 / 4;
+}
+
+.chance-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.chance-card-wrapper.flipped .chance-card {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
+}
+
+.card-front {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 2px dashed rgba(245, 158, 11, 0.3);
+  color: var(--color-amber);
+}
+
+.card-front:hover {
+  border-color: var(--color-amber);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.card-icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-family: var(--font-accent);
+  font-size: 0.9rem;
+}
+
+.card-back {
+  background: #334155;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  transform: rotateY(180deg);
+}
+
+.card-back-title {
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  color: #ff6b6b;
+  margin-bottom: 5px;
+}
+
+.card-back p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.btn-reset-chance {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  pointer-events: auto; /* Allow clicking the button inside flipped card */
+}
+
+.btn-reset-chance:hover {
+  background: var(--color-coral);
+}
+
+/* 7. Team Scoreboard (Bottom) */
+.score-container {
+  grid-column: span 2;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.score-header h2 {
+  font-family: var(--font-accent);
+  font-size: 1.4rem;
+}
+
+.btn-small {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: rgba(239, 68, 68, 0.8);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-small:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
+}
+
+.team-score-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.team-score-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.team-name {
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  color: var(--text-primary);
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+  width: 80%;
+  text-align: center;
+  margin-bottom: 10px;
+  outline: none;
+  transition: border-bottom 0.2s;
+}
+
+.team-name:focus {
+  border-bottom: 1px dashed var(--color-amber);
+}
+
+.team-score {
+  font-family: var(--font-accent);
+  font-size: 2.2rem;
+  color: var(--color-amber);
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.team-score.score-changed {
+  transform: scale(1.3);
+}
+
+.team-controls {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-score {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 0;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.btn-minus {
+  color: var(--color-coral);
+}
+.btn-minus:hover {
+  background: rgba(255, 107, 107, 0.15);
+  border-color: var(--color-coral);
+}
+
+.btn-plus {
+  color: var(--color-success);
+}
+.btn-plus:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--color-success);
+}
+
+/* 8. Placeholder & Footer */
+.placeholder-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--text-secondary);
+}
+
+.placeholder-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.placeholder-card h2 {
+  font-family: var(--font-accent);
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 30px 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* 9. Keyframes & Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjust */
+@media (max-width: 992px) {
+  .goldenbell-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  
+  .quiz-container {
+    grid-row: auto;
+  }
+  
+  .score-container {
+    grid-column: auto;
+  }
+  
+  .teams-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .teams-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .app-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .app-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

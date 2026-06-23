@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>도둑맞은 김소연 - 독서 골든벨 & 게임</title>
+  <!-- Google Fonts: Jua & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <i class="fa-solid fa-book-open text-amber"></i>
+        <h1>도둑맞은 김소연 <span class="subtitle">교실 독서 활동</span></h1>
+      </div>
+      <nav class="app-nav">
+        <button class="nav-btn active" data-target="goldenbell"><i class="fa-solid fa-bell"></i> 모둠 협동 골든벨</button>
+        <button class="nav-btn" data-target="escaperoom"><i class="fa-solid fa-key"></i> 고민 해결 방탈출 (준비중)</button>
+        <button class="nav-btn" data-target="valuesline"><i class="fa-solid fa-arrows-left-right"></i> 가치 수직선 토론 (준비중)</button>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      
+      <!-- SECTION 1: GOLDEN BELL -->
+      <section id="goldenbell" class="tab-content active">
+        <div class="goldenbell-grid">
+          
+          <!-- Left Area: Quiz Screen & Timer -->
+          <div class="quiz-container card">
+            <div class="quiz-header">
+              <span id="quiz-step" class="badge">1단계: 내용 확인 (하)</span>
+              <span id="quiz-number" class="quiz-num">문제 1/5</span>
+            </div>
+            
+            <div class="quiz-body">
+              <div id="quiz-question" class="question-text">
+                소연이는 전학생의 관심을 끌거나 무리에 끼기 위해, 자신이 싫어하는 화장을 억지로 따라 한 적이 있다.
+              </div>
+              
+              <!-- Quiz Options / Hints (Dynamically populated if needed) -->
+              <div id="quiz-choices" class="quiz-choices">
+                <!-- For O/X or Multiple choices -->
+              </div>
+
+              <!-- Quiz Answer (Hidden by default) -->
+              <div id="quiz-answer-box" class="answer-box hidden">
+                <div class="answer-label">정답</div>
+                <div id="quiz-answer" class="answer-text">O</div>
+                <div id="quiz-explanation" class="explanation-text">(자료 2페이지 4번 보기 참고)</div>
+              </div>
+            </div>
+            
+            <div class="quiz-footer">
+              <button id="btn-prev" class="quiz-nav-btn"><i class="fa-solid fa-chevron-left"></i> 이전</button>
+              <button id="btn-reveal" class="btn-primary"><i class="fa-solid fa-eye"></i> 정답 확인</button>
+              <button id="btn-next" class="quiz-nav-btn">다음 <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+
+          <!-- Right Top Area: Interactive Timer -->
+          <div class="timer-container card">
+            <h2><i class="fa-solid fa-stopwatch text-coral"></i> 생각 시간</h2>
+            <div class="timer-display">
+              <svg class="timer-svg" viewBox="0 0 100 100">
+                <circle class="timer-elapsed" cx="50" cy="50" r="45"></circle>
+                <circle id="timer-progress" class="timer-progress" cx="50" cy="50" r="45"></circle>
+              </svg>
+              <div id="timer-text" class="timer-text">30</div>
+            </div>
+            <div class="timer-controls">
+              <button id="btn-timer-30" class="btn-timer-preset active">30초</button>
+              <button id="btn-timer-60" class="btn-timer-preset">60초</button>
+            </div>
+            <div class="timer-actions">
+              <button id="btn-timer-start" class="btn-action btn-success"><i class="fa-solid fa-play"></i> 시작</button>
+              <button id="btn-timer-pause" class="btn-action btn-warning" disabled><i class="fa-solid fa-pause"></i> 일시정지</button>
+              <button id="btn-timer-reset" class="btn-action btn-danger"><i class="fa-solid fa-rotate-left"></i> 리셋</button>
+            </div>
+          </div>
+
+          <!-- Right Bottom Area: Chance Cards -->
+          <div class="chance-container card">
+            <h2><i class="fa-solid fa-star text-gold"></i> 모둠 찬스 카드</h2>
+            <p class="chance-desc">모둠당 경기 중 단 한 번씩만 쓸 수 있는 특별 찬스!</p>
+            <div class="chance-cards-grid">
+              
+              <!-- Card 1: Friend Chance -->
+              <div class="chance-card-wrapper" data-chance="friend">
+                <div class="chance-card">
+                  <div class="card-front">
+                    <div class="card-icon"><i class="fa-solid fa-user-group"></i></div>
+                    <span class="card-title">친구 찬스</span>
+                  </div>
+                  <div class="card-back">
+                    <div class="card-back-title">사용 완료</div>
+                    <p>다른 모둠의 답 하나 엿보기</p>
+                    <button class="btn-reset-chance">되돌리기</button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Card 2: Double Chance -->
+              <div class="chance-card-wrapper" data-chance="double">
+                <div class="chance-card">
+                  <div class="card-front">
+                    <div class="card-icon"><i class="fa-solid fa-xmark">x2</i></div>
+                    <span class="card-title">더블 찬스</span>
+                  </div>
+                  <div class="card-back">
+                    <div class="card-back-title">사용 완료</div>
+                    <p>이번 문제 점수 2배 획득!</p>
+                    <button class="btn-reset-chance">되돌리기</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3: Pass Chance -->
+              <div class="chance-card-wrapper" data-chance="pass">
+                <div class="chance-card">
+                  <div class="card-front">
+                    <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <span class="card-title">정답 패스</span>
+                  </div>
+                  <div class="card-back">
+                    <div class="card-back-title">사용 완료</div>
+                    <p>틀려도 점수가 감점되지 않음</p>
+                    <button class="btn-reset-chance">되돌리기</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Area: Team Scoreboard -->
+          <div class="score-container card">
+            <div class="score-header">
+              <h2><i class="fa-solid fa-trophy text-gold"></i> 실시간 모둠 점수판</h2>
+              <button id="btn-reset-scores" class="btn-small"><i class="fa-solid fa-trash-can"></i> 점수 초기화</button>
+            </div>
+            <div class="teams-grid">
+              <!-- Dynamically populated 1 to 6 Teams -->
+              <div class="team-score-card" data-team="1">
+                <input type="text" class="team-name" value="1모둠" title="모둠 이름 수정 가능">
+                <div class="team-score">0</div>
+                <div class="team-controls">
+                  <button class="btn-score btn-minus" data-amount="10">-10</button>
+                  <button class="btn-score btn-plus" data-amount="10">+10</button>
+                </div>
+              </div>
+              
+              <div class="team-score-card" data-team="2">
+                <input type="text" class="team-name" value="2모둠" title="모둠 이름 수정 가능">
+                <div class="team-score">0</div>
+                <div class="team-controls">
+                  <button class="btn-score btn-minus" data-amount="10">-10</button>
+                  <button class="btn-score btn-plus" data-amount="10">+10</button>
+                </div>
+              </div>
+
+              <div class="team-score-card" data-team="3">
+                <input type="text" class="team-name" value="3모둠" title="모둠 이름 수정 가능">
+                <div class="team-score">0</div>
+                <div class="team-controls">
+                  <button class="btn-score btn-minus" data-amount="10">-10</button>
+                  <button class="btn-score btn-plus" data-amount="10">+10</button>
+                </div>
+              </div>
+
+              <div class="team-score-card" data-team="4">
+                <input type="text" class="team-name" value="4모둠" title="모둠 이름 수정 가능">
+                <div class="team-score">0</div>
+                <div class="team-controls">
+                  <button class="btn-score btn-minus" data-amount="10">-10</button>
+                  <button class="btn-score btn-plus" data-amount="10">+10</button>
+                </div>
+              </div>
+
+              <div class="team-score-card" data-team="5">
+                <input type="text" class="team-name" value="5모둠" title="모둠 이름 수정 가능">
+                <div class="team-score">0</div>
+                <div class="team-controls">
+                  <button class="btn-score btn-minus" data-amount="10">-10</button>
+                  <button class="btn-score btn-plus" data-amount="10">+10</button>
+                </div>
+              </div>
+
+              <div class="team-score-card" data-team="6">
+                <input type="text" class="team-name" value="6모둠" title="모둠 이름 수정 가능">
+                <div class="team-score">0</div>
+                <div class="team-controls">
+                  <button class="btn-score btn-minus" data-amount="10">-10</button>
+                  <button class="btn-score btn-plus" data-amount="10">+10</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+      <!-- SECTION 2: ESCAPE ROOM (PLACEHOLDER) -->
+      <section id="escaperoom" class="tab-content">
+        <div class="placeholder-card card">
+          <i class="fa-solid fa-lock-open placeholder-icon"></i>
+          <h2>소연이의 고민 해결! 톡방 방탈출 게임</h2>
+          <p>이 기능은 현재 다음 개발 단계로 예정되어 있습니다. 골든벨 게임을 먼저 체험해보세요!</p>
+        </div>
+      </section>
+
+      <!-- SECTION 3: VALUES LINE (PLACEHOLDER) -->
+      <section id="valuesline" class="tab-content">
+        <div class="placeholder-card card">
+          <i class="fa-solid fa-arrows-left-right placeholder-icon"></i>
+          <h2>네 마음을 보여줘! 가치 수직선 코너 게임</h2>
+          <p>이 기능은 현재 다음 개발 단계로 예정되어 있습니다. 골든벨 게임을 먼저 체험해보세요!</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>© 2026 '도둑맞은 김소연' 독서 골든벨 프로그램. 초등 4학년 맞춤형 설계</p>
+    </footer>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
