@@ -859,3 +859,615 @@ body {
     justify-content: center;
   }
 }
+
+/* ==========================================================================
+   10. Real-time Interaction Styles (Teacher & Student)
+   ========================================================================== */
+
+/* Utility: Hidden */
+.hidden {
+  display: none !important;
+}
+
+/* Role Selection Overlay */
+.role-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.role-box {
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
+  padding: 40px;
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.role-box h2 {
+  font-family: var(--font-accent);
+  font-size: 2.2rem;
+  color: var(--color-amber);
+  margin-bottom: 15px;
+  text-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+.role-sub {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.role-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 25px 15px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.role-btn i {
+  font-size: 2.5rem;
+}
+
+.role-btn span {
+  font-family: var(--font-accent);
+  font-size: 1.3rem;
+}
+
+.role-btn small {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.role-btn.btn-teacher:hover {
+  border-color: var(--color-amber);
+  background: rgba(245, 158, 11, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(245, 158, 11, 0.2);
+}
+
+.role-btn.btn-teacher i {
+  color: var(--color-amber);
+}
+
+.role-btn.btn-student:hover {
+  border-color: var(--color-info);
+  background: rgba(59, 130, 246, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
+}
+
+.role-btn.btn-student i {
+  color: var(--color-info);
+}
+
+/* Teacher Room Control Bar */
+.room-control-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-room-action {
+  background: linear-gradient(135deg, var(--color-info), #1d4ed8);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: var(--font-main);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-room-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.room-code-badge {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--color-amber);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--color-amber);
+}
+
+.room-code-badge strong {
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+}
+
+.connection-status {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.connection-status.connected {
+  color: var(--color-success);
+}
+
+.connection-status.disconnected {
+  color: var(--text-secondary);
+}
+
+/* Team Score Card Status Indicators */
+.team-status-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.conn-dot {
+  font-size: 0.75rem;
+  transition: color 0.3s;
+}
+
+.conn-dot.connected {
+  color: var(--color-success) !important;
+  filter: drop-shadow(0 0 4px var(--color-success));
+}
+
+.conn-dot.disconnected {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.submit-check {
+  font-size: 0.9rem;
+  color: var(--color-amber);
+  animation: bounce 0.5s ease infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-3px); }
+}
+
+/* Student View Styling */
+.student-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.student-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-team {
+  background: var(--color-amber);
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+}
+
+.badge-conn {
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-conn.connected {
+  color: var(--color-success);
+}
+
+.badge-conn.disconnected {
+  color: var(--color-danger);
+}
+
+.student-main {
+  flex: 1;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.student-card {
+  width: 100%;
+  padding: 30px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  animation: slideUp 0.4s ease;
+}
+
+.student-card h3 {
+  font-family: var(--font-accent);
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.student-card .desc {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input[type="number"] {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  font-size: 1.4rem;
+  color: white;
+  border-radius: 12px;
+  text-align: center;
+  font-family: var(--font-accent);
+  letter-spacing: 5px;
+  outline: none;
+}
+
+.form-group input[type="number"]::-webkit-outer-spin-button,
+.form-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-group input[type="number"]:focus {
+  border-color: var(--color-amber);
+}
+
+/* Student Team Selection Grid */
+.student-team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.btn-select-team-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 15px;
+  border-radius: 12px;
+  font-family: var(--font-accent);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-select-team-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-amber);
+}
+
+.btn-select-team-card.selected {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: var(--color-amber);
+  color: var(--color-amber);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.btn-select-team-card.disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-student-action {
+  width: 100%;
+  background: linear-gradient(135deg, var(--color-amber), #d97706);
+  border: none;
+  color: black;
+  padding: 15px;
+  font-family: var(--font-accent);
+  font-size: 1.3rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+  box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+}
+
+.btn-student-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.5);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  font-size: 3.5rem;
+  color: var(--color-amber);
+  margin-bottom: 20px;
+}
+
+.joined-info {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.joined-info strong {
+  color: var(--text-primary);
+}
+
+/* Student Quiz Screen Styles */
+.quiz-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.student-question-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 25px;
+  word-break: keep-all;
+  text-align: left;
+}
+
+.student-input-area {
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.student-input-area .choice-btn {
+  width: 90px;
+  height: 90px;
+  font-size: 2rem;
+}
+
+.student-input-area .choice-mult-btn {
+  font-size: 1rem;
+  padding: 12px;
+  width: 100%;
+}
+
+/* Subjective Text Area */
+.student-subjective-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 1.1rem;
+  color: white;
+  min-height: 80px;
+  resize: none;
+  outline: none;
+  font-family: var(--font-main);
+  transition: border-color 0.2s;
+}
+
+.student-subjective-input:focus {
+  border-color: var(--color-amber);
+}
+
+/* Chance selector in Student View */
+.student-chance-selector {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.chance-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.student-chance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.btn-student-chance {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-student-chance:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.btn-student-chance.selected {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--color-amber);
+  color: var(--color-amber);
+  font-weight: bold;
+}
+
+.btn-student-chance.disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Feedback Screens */
+.feedback-icon {
+  font-size: 4.5rem;
+  margin-bottom: 20px;
+}
+
+.feedback-icon.correct {
+  color: var(--color-success);
+  filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.4));
+}
+
+.feedback-icon.wrong {
+  color: var(--color-danger);
+  filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
+}
+
+.feedback-icon.waiting {
+  color: var(--color-amber);
+}
+
+.student-my-answer-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.student-my-answer-box strong {
+  font-family: var(--font-accent);
+  color: var(--color-amber);
+  font-size: 1.4rem;
+}
+
+/* Rankings List */
+.trophy-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  color: var(--color-amber);
+  animation: shine 2s infinite alternate;
+}
+
+@keyframes shine {
+  from { filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.4)); }
+  to { filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.8)); }
+}
+
+.rankings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  text-align: left;
+  width: 100%;
+}
+
+.ranking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.ranking-item.rank-1 {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-amber);
+}
+
+.rank-badge {
+  font-family: var(--font-accent);
+  font-size: 1.2rem;
+  background: #334155;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rank-1 .rank-badge {
+  background: var(--color-amber);
+  color: black;
+}
+
+.rank-team-name {
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+  flex: 1;
+  margin-left: 15px;
+}
+
+.rank-score {
+  font-family: var(--font-accent);
+  font-size: 1.3rem;
+  color: var(--color-amber);
+}
+
+.student-footer {
+  text-align: center;
+  padding: 20px 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--border-color);
+}

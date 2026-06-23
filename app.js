@@ -317,6 +317,26 @@ let timerTimeLeft = 30;
 let timerInterval = null;
 let isTimerRunning = false;
 
+// Real-time communication state
+const MQTT_BROKER = 'wss://broker.emqx.io:8084/mqtt';
+let mqttClient = null;
+let roomCode = '';
+let userRole = ''; // 'teacher' | 'student'
+let myTeam = ''; // '1' ~ '6'
+let joinedTeams = {}; // { '1': true, ... }
+let submittedAnswers = {}; // { '1': 'O', ... }
+let usedChances = {
+  '1': { friend: false, double: false, pass: false },
+  '2': { friend: false, double: false, pass: false },
+  '3': { friend: false, double: false, pass: false },
+  '4': { friend: false, double: false, pass: false },
+  '5': { friend: false, double: false, pass: false },
+  '6': { friend: false, double: false, pass: false }
+};
+let currentSubmittedChance = ''; // 학생용 현재 문제에서 선택한 찬스
+let currentSubmittedAnswer = ''; // 학생용 현재 문제에서 입력한 답안
+let hasUsedChanceLocal = { friend: false, double: false, pass: false }; // 학생용 본인 찬스 사용 기록
+
 // ==========================================
 // 4. DOM ELEMENTS
 // ==========================================
@@ -344,8 +364,33 @@ const btnTimerReset = document.getElementById('btn-timer-reset');
 // 5. INITIALIZATION & ROUTING
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-  initApp();
+  initRoleSelection();
 });
+
+function initRoleSelection() {
+  const btnSelectTeacher = document.getElementById('btn-select-teacher');
+  const btnSelectStudent = document.getElementById('btn-select-student');
+  const roleOverlay = document.getElementById('role-selection-overlay');
+  const teacherView = document.getElementById('teacher-view');
+  const studentView = document.getElementById('student-view');
+
+  btnSelectTeacher.addEventListener('click', () => {
+    sounds.init();
+    userRole = 'teacher';
+    roleOverlay.classList.add('hidden');
+    teacherView.classList.remove('hidden');
+    initApp();
+    initTeacherRealtime();
+  });
+
+  btnSelectStudent.addEventListener('click', () => {
+    sounds.init();
+    userRole = 'student';
+    roleOverlay.classList.add('hidden');
+    studentView.classList.remove('hidden');
+    initStudentRealtime();
+  });
+}
 
 function initApp() {
   // Navigation tabs
@@ -461,6 +506,22 @@ function loadQuiz(index) {
     hint.innerHTML = '<i class="fa-solid fa-comments text-amber"></i> 모둠 친구들과 함께 찬성/반대 이유를 적어보고 발표해 봅시다.';
     elChoices.appendChild(hint);
   }
+
+  // Real-time synchronization: publish quiz to students
+  if (mqttClient && userRole === 'teacher') {
+    sendControlMessage({
+      action: 'show_quiz',
+      index: index,
+      step: data.step,
+      type: data.type,
+      question: data.question,
+      choices: data.choices || []
+    });
+
+    // Reset student submission checkmarks on teacher UI
+    document.querySelectorAll('.submit-check').forEach(el => el.classList.add('hidden'));
+    submittedAnswers = {};
+  }
 }
 
 function navigateQuiz(direction) {
@@ -519,6 +580,57 @@ function revealAnswer() {
   
   btnReveal.innerHTML = `<i class="fa-solid fa-eye-slash"></i> 정답 숨기기`;
   btnReveal.classList.add('btn-revealed');
+
+  // Real-time synchronization: perform automatic grading & score synchronization
+  if (mqttClient && userRole === 'teacher') {
+    for (let teamNum = 1; teamNum <= 6; teamNum++) {
+      const studentAns = submittedAnswers[teamNum.toString()];
+      if (studentAns !== undefined) {
+        let isCorrect = false;
+        if (data.type === 'MULTIPLE') {
+          isCorrect = studentAns === data.answer;
+        } else if (data.type === 'FILL_BLANK') {
+          // 주관식/단답형 공백 제거 비교
+          isCorrect = studentAns.replace(/\s+/g, '') === data.answer.replace(/\s+/g, '');
+        } else if (data.type === 'OX') {
+          isCorrect = studentAns.trim().toUpperCase() === data.answer.trim().toUpperCase();
+        } else {
+          // 토론형 등 생각나누기 문제는 교사가 직접 채점(점수판 수동 조절)하도록 함
+          isCorrect = false;
+        }
+
+        if (isCorrect) {
+          // double 찬스 사용 여부 확인
+          const doubleChanceUsed = usedChances[teamNum.toString()]?.double;
+          const scoreCard = document.getElementById(`teacher-team-card-${teamNum}`);
+          const displayScore = scoreCard.querySelector('.team-score');
+          let scoreVal = parseInt(displayScore.textContent);
+          
+          // 더블 찬스는 20점, 일반은 10점
+          const addAmount = doubleChanceUsed ? 20 : 10;
+          scoreVal += addAmount;
+          displayScore.textContent = scoreVal;
+          localStorage.setItem(`team_score_${teamNum}`, scoreVal);
+          animateScoreChange(displayScore);
+        }
+      }
+    }
+
+    // Collect latest score state
+    let currentScores = {};
+    for (let teamNum = 1; teamNum <= 6; teamNum++) {
+      const scoreCard = document.getElementById(`teacher-team-card-${teamNum}`);
+      currentScores[teamNum.toString()] = parseInt(scoreCard.querySelector('.team-score').textContent);
+    }
+
+    // Publish reveal answer & current scores to students
+    sendControlMessage({
+      action: 'reveal_answer',
+      answer: data.answer,
+      explanation: data.explanation,
+      scores: currentScores
+    });
+  }
 }
 
 // ==========================================
@@ -559,6 +671,14 @@ function startTimer() {
   isTimerRunning = true;
   btnTimerStart.disabled = true;
   btnTimerPause.disabled = false;
+
+  // Real-time synchronization: publish start_timer
+  if (mqttClient && userRole === 'teacher') {
+    sendControlMessage({
+      action: 'start_timer',
+      duration: timerDuration
+    });
+  }
   
   timerInterval = setInterval(() => {
     timerTimeLeft--;
@@ -589,6 +709,13 @@ function pauseTimer() {
   isTimerRunning = false;
   btnTimerStart.disabled = false;
   btnTimerPause.disabled = true;
+
+  // Real-time synchronization: publish pause_timer
+  if (mqttClient && userRole === 'teacher') {
+    sendControlMessage({
+      action: 'pause_timer'
+    });
+  }
 }
 
 function resetTimer() {
@@ -601,6 +728,14 @@ function resetTimer() {
   btnTimerPause.disabled = true;
   
   updateTimerUI();
+
+  // Real-time synchronization: publish reset_timer
+  if (mqttClient && userRole === 'teacher') {
+    sendControlMessage({
+      action: 'reset_timer',
+      duration: timerDuration
+    });
+  }
 }
 
 function updateTimerUI() {
@@ -673,6 +808,11 @@ function initScores() {
       localStorage.setItem(`team_score_${teamNum}`, currentVal);
       animateScoreChange(displayScore);
       sounds.playWrong();
+
+      // Real-time synchronization: sync scores after manual change
+      if (mqttClient && userRole === 'teacher') {
+        broadcastLatestScores();
+      }
     });
     
     btnPlus.addEventListener('click', () => {
@@ -683,6 +823,11 @@ function initScores() {
       localStorage.setItem(`team_score_${teamNum}`, currentVal);
       animateScoreChange(displayScore);
       sounds.playCorrect();
+
+      // Real-time synchronization: sync scores after manual change
+      if (mqttClient && userRole === 'teacher') {
+        broadcastLatestScores();
+      }
     });
   });
   
@@ -697,6 +842,11 @@ function initScores() {
         localStorage.setItem(`team_score_${teamNum}`, "0");
       });
       sounds.playWrong();
+
+      // Real-time synchronization: sync scores after reset
+      if (mqttClient && userRole === 'teacher') {
+        broadcastLatestScores();
+      }
     }
   });
 }
@@ -706,4 +856,566 @@ function animateScoreChange(element) {
   setTimeout(() => {
     element.classList.remove('score-changed');
   }, 200);
+}
+
+// ==========================================
+// 10. REAL-TIME REALTIME SYNC ENGINE (MQTT)
+// ==========================================
+
+// --- A. Teacher Real-time Module ---
+function initTeacherRealtime() {
+  const btnCreateRoom = document.getElementById('btn-create-room');
+  const roomInfoDisplay = document.getElementById('room-info-display');
+  const displayRoomCode = document.getElementById('display-room-code');
+  const connectionStatus = document.getElementById('connection-status-badge');
+
+  btnCreateRoom.addEventListener('click', () => {
+    sounds.init();
+    // 4-digit random room code
+    roomCode = Math.floor(1000 + Math.random() * 9000).toString();
+    displayRoomCode.textContent = roomCode;
+
+    btnCreateRoom.disabled = true;
+    btnCreateRoom.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 연결 중...`;
+
+    // Connect to EMQX Public secure broker
+    mqttClient = mqtt.connect(MQTT_BROKER);
+
+    mqttClient.on('connect', () => {
+      btnCreateRoom.classList.add('hidden');
+      roomInfoDisplay.classList.remove('hidden');
+      connectionStatus.textContent = '연결 완료';
+      connectionStatus.className = 'connection-status connected';
+      sounds.playBell();
+
+      // Subscribe to student messages
+      mqttClient.subscribe(`kimsoyeon/room/${roomCode}/status`, (err) => {
+        if (!err) {
+          console.log(`Teacher successfully subscribed to: kimsoyeon/room/${roomCode}/status`);
+          // Send initial state to students (to sync page reload)
+          sendControlMessage({
+            action: 'init'
+          });
+        }
+      });
+    });
+
+    mqttClient.on('message', (topic, message) => {
+      try {
+        const payload = JSON.parse(message.toString());
+        handleTeacherIncomingMessage(payload);
+      } catch (e) {
+        console.error('Error parsing incoming student message:', e);
+      }
+    });
+
+    mqttClient.on('error', (err) => {
+      console.error('MQTT Connection Error:', err);
+      alert('실시간 서버 연결에 실패했습니다. 네트워크 상태를 확인해주세요.');
+      btnCreateRoom.disabled = false;
+      btnCreateRoom.innerHTML = `<i class="fa-solid fa-wifi"></i> 실시간 방 만들기`;
+    });
+  });
+}
+
+function handleTeacherIncomingMessage(payload) {
+  const { action, team, answer, chance } = payload;
+  if (!team) return;
+
+  const teamNum = team.toString();
+
+  if (action === 'join') {
+    joinedTeams[teamNum] = true;
+    // Mark green connection dot on teacher scoreboard
+    const connDot = document.querySelector(`#teacher-team-card-${teamNum} .conn-dot`);
+    if (connDot) {
+      connDot.className = 'conn-dot connected';
+      connDot.title = '접속됨';
+    }
+    sounds.playTick();
+
+    // Send current quiz state to newly joined student immediately
+    const data = quizData[currentQuizIndex];
+    sendControlMessage({
+      action: 'show_quiz',
+      index: currentQuizIndex,
+      step: data.step,
+      type: data.type,
+      question: data.question,
+      choices: data.choices || []
+    });
+  } 
+  else if (action === 'submit_answer') {
+    submittedAnswers[teamNum] = answer;
+    if (chance) {
+      usedChances[teamNum][chance] = true;
+    }
+
+    // Show checkmark on teacher scoreboard
+    const checkEl = document.querySelector(`#teacher-team-card-${teamNum} .submit-check`);
+    if (checkEl) {
+      checkEl.classList.remove('hidden');
+    }
+    sounds.playTick();
+  }
+}
+
+function broadcastLatestScores() {
+  let currentScores = {};
+  for (let teamNum = 1; teamNum <= 6; teamNum++) {
+    const scoreCard = document.getElementById(`teacher-team-card-${teamNum}`);
+    currentScores[teamNum.toString()] = parseInt(scoreCard.querySelector('.team-score').textContent);
+  }
+  sendControlMessage({
+    action: 'sync_scores',
+    scores: currentScores
+  });
+}
+
+function sendControlMessage(payload) {
+  if (mqttClient && mqttClient.connected) {
+    mqttClient.publish(`kimsoyeon/room/${roomCode}/control`, JSON.stringify(payload));
+  }
+}
+
+// --- B. Student Real-time Module ---
+function initStudentRealtime() {
+  const btnJoin = document.getElementById('btn-student-join');
+  const inputRoom = document.getElementById('input-room-code');
+  const teamCards = document.querySelectorAll('.btn-select-team-card');
+  const connBadge = document.getElementById('student-conn-badge');
+  const teamBadge = document.getElementById('student-team-badge');
+
+  let selectedTeamChoice = '';
+
+  // Select team event
+  teamCards.forEach(card => {
+    card.addEventListener('click', () => {
+      sounds.init();
+      teamCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedTeamChoice = card.dataset.teamChoice;
+    });
+  });
+
+  btnJoin.addEventListener('click', () => {
+    sounds.init();
+    const codeVal = inputRoom.value.trim();
+    if (!codeVal || codeVal.length !== 4) {
+      alert('선생님이 보여주신 올바른 방 코드 4자리를 입력하세요.');
+      return;
+    }
+    if (!selectedTeamChoice) {
+      alert('우리 모둠을 선택해주세요.');
+      return;
+    }
+
+    roomCode = codeVal;
+    myTeam = selectedTeamChoice;
+
+    btnJoin.disabled = true;
+    btnJoin.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 연결 중...`;
+
+    // Connect student device to broker
+    mqttClient = mqtt.connect(MQTT_BROKER);
+
+    mqttClient.on('connect', () => {
+      connBadge.textContent = '연결됨';
+      connBadge.className = 'badge-conn connected';
+      teamBadge.textContent = `${myTeam}모둠`;
+      sounds.playBell();
+
+      // Subscribe to teacher commands
+      mqttClient.subscribe(`kimsoyeon/room/${roomCode}/control`, (err) => {
+        if (!err) {
+          console.log(`Student device subscribed to control channel`);
+          // Publish join event
+          sendStudentMessage({
+            action: 'join',
+            team: myTeam
+          });
+
+          // Show waiting screen
+          document.getElementById('student-login-screen').classList.add('hidden');
+          document.getElementById('student-waiting-screen').classList.remove('hidden');
+          document.getElementById('student-joined-room').textContent = roomCode;
+          document.getElementById('student-joined-team').textContent = `${myTeam}모둠`;
+        }
+      });
+    });
+
+    mqttClient.on('message', (topic, message) => {
+      try {
+        const payload = JSON.parse(message.toString());
+        handleStudentIncomingMessage(payload);
+      } catch (e) {
+        console.error('Error parsing incoming control message:', e);
+      }
+    });
+
+    mqttClient.on('error', (err) => {
+      console.error('Student connection error:', err);
+      alert('실시간 서버 연결 실패. 방 코드를 확인하시거나 잠시 후 다시 시도해 주세요.');
+      btnJoin.disabled = false;
+      btnJoin.innerHTML = `<i class="fa-solid fa-door-open"></i> 입장하기`;
+    });
+  });
+
+  // Student answer submit listener
+  const btnSubmit = document.getElementById('btn-student-submit');
+  btnSubmit.addEventListener('click', () => {
+    sounds.init();
+    
+    // Read input value based on current quiz
+    let answerVal = '';
+    const inputArea = document.getElementById('student-input-container');
+    const oxSelected = inputArea.querySelector('.choice-btn.selected');
+    const multSelected = inputArea.querySelector('.choice-mult-btn.selected');
+    const fillBlankText = inputArea.querySelector('.student-subjective-input');
+
+    if (oxSelected) {
+      answerVal = oxSelected.dataset.value;
+    } else if (multSelected) {
+      answerVal = multSelected.dataset.value;
+    } else if (fillBlankText) {
+      answerVal = fillBlankText.value.trim();
+    }
+
+    if (!answerVal) {
+      alert('답을 선택하거나 입력해주세요!');
+      return;
+    }
+
+    currentSubmittedAnswer = answerVal;
+
+    // Send answer to teacher
+    sendStudentMessage({
+      action: 'submit_answer',
+      team: myTeam,
+      answer: currentSubmittedAnswer,
+      chance: currentSubmittedChance || null
+    });
+
+    // Record local chance usage
+    if (currentSubmittedChance) {
+      hasUsedChanceLocal[currentSubmittedChance] = true;
+    }
+
+    // Show feedback waiting screen
+    document.getElementById('student-quiz-screen').classList.add('hidden');
+    const feedbackScreen = document.getElementById('student-feedback-screen');
+    feedbackScreen.classList.remove('hidden');
+
+    const feedbackIcon = document.getElementById('student-feedback-icon');
+    feedbackIcon.className = 'feedback-icon waiting';
+    feedbackIcon.innerHTML = `<i class="fa-solid fa-paper-plane fa-beat-fade"></i>`;
+    
+    document.getElementById('student-feedback-title').textContent = '답안 제출 완료!';
+    document.getElementById('student-feedback-desc').textContent = '선생님이 정답을 확인하실 때까지 기다려 주세요.';
+    document.getElementById('student-my-submitted-answer').textContent = currentSubmittedAnswer;
+
+    const chanceBadge = document.getElementById('student-chance-used-badge');
+    if (currentSubmittedChance) {
+      chanceBadge.classList.remove('hidden');
+      let chanceText = '';
+      if (currentSubmittedChance === 'friend') chanceText = '친구 찬스 사용';
+      if (currentSubmittedChance === 'double') chanceText = '더블 찬스 사용';
+      if (currentSubmittedChance === 'pass') chanceText = '정답 패스 사용';
+      chanceBadge.textContent = chanceText;
+    } else {
+      chanceBadge.classList.add('hidden');
+    }
+  });
+
+  // Student chance cards listeners
+  const chanceButtons = document.querySelectorAll('.btn-student-chance');
+  chanceButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sounds.init();
+      const chanceType = btn.dataset.studentChance;
+
+      if (hasUsedChanceLocal[chanceType]) {
+        alert('이미 이번 경기에서 사용한 찬스입니다!');
+        return;
+      }
+
+      if (currentSubmittedChance === chanceType) {
+        // Toggle off
+        currentSubmittedChance = '';
+        btn.classList.remove('selected');
+        sounds.playTick();
+      } else {
+        // Select
+        chanceButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        currentSubmittedChance = chanceType;
+        sounds.playBell();
+      }
+    });
+  });
+}
+
+function handleStudentIncomingMessage(payload) {
+  const { action, index, step, type, question, choices, answer, explanation, scores } = payload;
+
+  if (action === 'init') {
+    // Show waiting screen on teacher reload
+    document.getElementById('student-login-screen').classList.add('hidden');
+    document.getElementById('student-waiting-screen').classList.remove('hidden');
+    document.getElementById('student-quiz-screen').classList.add('hidden');
+    document.getElementById('student-feedback-screen').classList.add('hidden');
+    document.getElementById('student-result-screen').classList.add('hidden');
+  } 
+  else if (action === 'show_quiz') {
+    // Sync current quiz from teacher
+    renderStudentQuiz(index, step, type, question, choices);
+  } 
+  else if (action === 'start_timer') {
+    // Reset and start timer UI locally
+    const duration = payload.duration || 30;
+    // (Optional: students can see timer locally synchronized)
+    sounds.playTick();
+  } 
+  else if (action === 'pause_timer' || action === 'reset_timer') {
+    // Do something locally if needed
+  } 
+  else if (action === 'reveal_answer') {
+    // Check answer correctness and show feedback
+    const isCorrect = verifyAnswerCorrectness(answer, type);
+    const feedbackScreen = document.getElementById('student-feedback-screen');
+    const feedbackIcon = document.getElementById('student-feedback-icon');
+    const feedbackTitle = document.getElementById('student-feedback-title');
+    const feedbackDesc = document.getElementById('student-feedback-desc');
+
+    document.getElementById('student-quiz-screen').classList.add('hidden');
+    feedbackScreen.classList.remove('hidden');
+
+    // If result score state exists, we can sync my score
+    let myUpdatedScore = scores ? (scores[myTeam] !== undefined ? scores[myTeam] : 0) : 0;
+
+    if (isCorrect) {
+      sounds.playCorrect();
+      feedbackIcon.className = 'feedback-icon correct';
+      feedbackIcon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+      
+      const doubleChance = currentSubmittedChance === 'double';
+      const addPoints = doubleChance ? 20 : 10;
+      feedbackTitle.textContent = `정답입니다! (+${addPoints}점)`;
+      feedbackDesc.innerHTML = `정답: <strong style="color:var(--color-success)">${answer}</strong><br>${explanation}`;
+    } else {
+      const passChance = currentSubmittedChance === 'pass';
+      if (passChance) {
+        sounds.playCorrect(); // 패스 찬스로 보호됨
+        feedbackIcon.className = 'feedback-icon correct';
+        feedbackIcon.innerHTML = `<i class="fa-solid fa-shield-halved"></i>`;
+        feedbackTitle.textContent = '아깝지만 감점 없음! (패스 찬스)';
+        feedbackDesc.innerHTML = `정답: <strong style="color:var(--color-coral)">${answer}</strong><br>${explanation}`;
+      } else {
+        sounds.playWrong();
+        feedbackIcon.className = 'feedback-icon wrong';
+        feedbackIcon.innerHTML = `<i class="fa-solid fa-circle-xmark"></i>`;
+        feedbackTitle.textContent = '아쉽게도 오답입니다. (0점)';
+        feedbackDesc.innerHTML = `정답: <strong style="color:var(--color-coral)">${answer}</strong><br>${explanation}`;
+      }
+    }
+
+    // Check if it was the last question (Quiz 15) to transition to final score
+    if (index === 14) {
+      // Create a slight delay and sync final results
+      setTimeout(() => {
+        if (scores) {
+          showStudentFinalResults(scores);
+        }
+      }, 5000);
+    }
+  } 
+  else if (action === 'sync_scores') {
+    // If scores synced manually
+    if (scores && document.getElementById('student-result-screen').classList.contains('hidden')) {
+      // Optionally update local UI if needed
+    }
+  }
+}
+
+function verifyAnswerCorrectness(correctAnswer, type) {
+  if (!currentSubmittedAnswer) return false;
+  if (type === 'MULTIPLE') {
+    return currentSubmittedAnswer === correctAnswer;
+  } else if (type === 'FILL_BLANK') {
+    return currentSubmittedAnswer.replace(/\s+/g, '') === correctAnswer.replace(/\s+/g, '');
+  } else if (type === 'OX') {
+    return currentSubmittedAnswer.trim().toUpperCase() === correctAnswer.trim().toUpperCase();
+  }
+  return false;
+}
+
+function renderStudentQuiz(quizIndex, step, type, question, choices) {
+  // Reset student page states
+  document.getElementById('student-waiting-screen').classList.add('hidden');
+  document.getElementById('student-feedback-screen').classList.add('hidden');
+  document.getElementById('student-result-screen').classList.add('hidden');
+  
+  const quizScreen = document.getElementById('student-quiz-screen');
+  quizScreen.classList.remove('hidden');
+
+  document.getElementById('student-quiz-step').textContent = step;
+  document.getElementById('student-quiz-number').textContent = `문제 ${quizIndex + 1}/15`;
+  document.getElementById('student-quiz-question').textContent = question;
+
+  // Reset inputs
+  currentSubmittedAnswer = '';
+  currentSubmittedChance = '';
+
+  // Setup Chance Buttons state
+  const chanceButtons = document.querySelectorAll('.btn-student-chance');
+  chanceButtons.forEach(btn => {
+    btn.classList.remove('selected');
+    const chanceType = btn.dataset.studentChance;
+    if (hasUsedChanceLocal[chanceType]) {
+      btn.classList.add('disabled');
+      btn.disabled = true;
+      btn.title = '이미 사용 완료한 찬스';
+    } else {
+      btn.classList.remove('disabled');
+      btn.disabled = false;
+      btn.title = '이번 문제에 사용';
+    }
+  });
+
+  // Render Input area based on type
+  const inputContainer = document.getElementById('student-input-container');
+  inputContainer.innerHTML = '';
+
+  if (type === 'OX') {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'quiz-choices';
+    wrapper.style.gap = '30px';
+
+    const btnO = document.createElement('button');
+    btnO.className = 'choice-btn ox-o';
+    btnO.dataset.value = 'O';
+    btnO.innerHTML = '<i class="fa-regular fa-circle"></i>';
+    btnO.addEventListener('click', () => {
+      sounds.init();
+      wrapper.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+      btnO.classList.add('selected');
+      sounds.playTick();
+    });
+
+    const btnX = document.createElement('button');
+    btnX.className = 'choice-btn ox-x';
+    btnX.dataset.value = 'X';
+    btnX.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    btnX.addEventListener('click', () => {
+      sounds.init();
+      wrapper.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+      btnX.classList.add('selected');
+      sounds.playTick();
+    });
+
+    wrapper.appendChild(btnO);
+    wrapper.appendChild(btnX);
+    inputContainer.appendChild(wrapper);
+
+    // Style helper for selected OX
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .student-input-area .choice-btn.selected.ox-o { background: rgba(255, 107, 107, 0.25); border-color: #ff6b6b; transform: scale(1.05); }
+      .student-input-area .choice-btn.selected.ox-x { background: rgba(59, 130, 246, 0.25); border-color: #3b82f6; transform: scale(1.05); }
+    `;
+    document.head.appendChild(style);
+  } 
+  else if (type === 'MULTIPLE') {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'quiz-choices-multiple';
+    wrapper.style.gridTemplateColumns = '1fr';
+    wrapper.style.width = '100%';
+
+    choices.forEach((choice, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-mult-btn';
+      btn.dataset.value = (idx + 1).toString();
+      btn.innerHTML = `<span class="num-badge">${idx + 1}</span> ${choice}`;
+      btn.addEventListener('click', () => {
+        sounds.init();
+        wrapper.querySelectorAll('.choice-mult-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        sounds.playTick();
+      });
+      wrapper.appendChild(btn);
+    });
+    inputContainer.appendChild(wrapper);
+
+    // Style helper for selected Multiple
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .student-input-area .choice-mult-btn.selected { background: rgba(245, 158, 11, 0.25); border-color: var(--color-amber); }
+    `;
+    document.head.appendChild(style);
+  } 
+  else if (type === 'FILL_BLANK') {
+    const textarea = document.createElement('textarea');
+    textarea.className = 'student-subjective-input';
+    textarea.placeholder = '정답 단어를 정직하게 타이핑하세요...';
+    inputContainer.appendChild(textarea);
+  } 
+  else if (type === 'SUBJECTIVE' || type === 'DISCUSSION') {
+    const hint = document.createElement('div');
+    hint.className = 'student-my-answer-box';
+    hint.style.fontSize = '1.2rem';
+    hint.innerHTML = `<i class="fa-solid fa-comments text-amber"></i> 생각 나누기 문제 (토론)<br><p style="font-size:0.9rem; color:var(--text-secondary); margin-top:5px;">모둠원들과 상의하여 교실 칠판에 적거나 직접 손을 들어 의견을 말해보세요!</p>`;
+    inputContainer.appendChild(hint);
+
+    // Auto submit placeholder answer since no direct text grading is needed
+    currentSubmittedAnswer = '[토론 참가]';
+  }
+}
+
+function showStudentFinalResults(scores) {
+  document.getElementById('student-login-screen').classList.add('hidden');
+  document.getElementById('student-waiting-screen').classList.add('hidden');
+  document.getElementById('student-quiz-screen').classList.add('hidden');
+  document.getElementById('student-feedback-screen').classList.add('hidden');
+  
+  const resultScreen = document.getElementById('student-result-screen');
+  resultScreen.classList.remove('hidden');
+
+  sounds.playBell();
+
+  // Convert scores dictionary to array and sort
+  let scoreArray = [];
+  for (let teamNum in scores) {
+    scoreArray.push({
+      team: teamNum,
+      score: scores[teamNum]
+    });
+  }
+  scoreArray.sort((a, b) => b.score - a.score);
+
+  const rankingsList = document.getElementById('student-rankings-list');
+  rankingsList.innerHTML = '';
+
+  scoreArray.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = `ranking-item ${idx === 0 ? 'rank-1' : ''}`;
+    
+    // Check if this row belongs to "my" team
+    if (item.team === myTeam) {
+      row.style.border = '2px solid var(--color-info)';
+      row.style.background = 'rgba(59, 130, 246, 0.1)';
+    }
+
+    row.innerHTML = `
+      <div class="rank-badge">${idx + 1}</div>
+      <div class="rank-team-name">${item.team}모둠 ${item.team === myTeam ? '(우리 모둠)' : ''}</div>
+      <div class="rank-score">${item.score}점</div>
+    `;
+    rankingsList.appendChild(row);
+  });
+}
+
+function sendStudentMessage(payload) {
+  if (mqttClient && mqttClient.connected) {
+    mqttClient.publish(`kimsoyeon/room/${roomCode}/status`, JSON.stringify(payload));
+  }
 }
