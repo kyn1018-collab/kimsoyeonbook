@@ -325,6 +325,7 @@ let userRole = ''; // 'teacher' | 'student'
 let myTeam = ''; // '1' ~ '6'
 let joinedTeams = {}; // { '1': true, ... }
 let submittedAnswers = {}; // { '1': 'O', ... }
+let submittedChances = {}; // { '1': 'double', ... }
 let usedChances = {
   '1': { friend: false, double: false, pass: false },
   '2': { friend: false, double: false, pass: false },
@@ -521,6 +522,7 @@ function loadQuiz(index) {
     // Reset student submission checkmarks on teacher UI
     document.querySelectorAll('.submit-check').forEach(el => el.classList.add('hidden'));
     submittedAnswers = {};
+    submittedChances = {};
   }
 }
 
@@ -601,7 +603,7 @@ function revealAnswer() {
 
         if (isCorrect) {
           // double 찬스 사용 여부 확인
-          const doubleChanceUsed = usedChances[teamNum.toString()]?.double;
+          const doubleChanceUsed = submittedChances[teamNum.toString()] === 'double';
           const scoreCard = document.getElementById(`teacher-team-card-${teamNum}`);
           const displayScore = scoreCard.querySelector('.team-score');
           let scoreVal = parseInt(displayScore.textContent);
@@ -950,6 +952,7 @@ function handleTeacherIncomingMessage(payload) {
     submittedAnswers[teamNum] = answer;
     if (chance) {
       usedChances[teamNum][chance] = true;
+      submittedChances[teamNum] = chance;
     }
 
     // Show checkmark on teacher scoreboard
