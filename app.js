@@ -626,6 +626,7 @@ function revealAnswer() {
     // Publish reveal answer & current scores to students
     sendControlMessage({
       action: 'reveal_answer',
+      type: data.type,
       answer: data.answer,
       explanation: data.explanation,
       scores: currentScores
