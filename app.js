@@ -164,10 +164,10 @@ const quizData = [
   {
     step: "1단계: 내용 확인 (난이도: 하)",
     type: "OX",
-    question: "새로 전학 온 '재이'는 반 친구들의 관심을 끌기 위해 화장품을 가지고 다니며 쉬는 시간마다 화장을 했다.",
+    question: "전학온 소연이는 반 친구들의 관심을 끌기 위해 화장품을 가지고 다니며 쉬는 시간마다 화장을 했다.",
     choices: ["O", "X"],
     answer: "O",
-    explanation: "재이는 예쁘게 보이고 친구들의 인기를 얻고자 쉬는 시간에 화장을 하였고, 다른 아이들도 이를 부러워하며 따라 했습니다."
+    explanation: "전학온 소연이는 예쁘게 보이고 친구들의 인기를 얻고자 쉬는 시간에 화장을 하였고, 다른 아이들도 이를 부러워하며 따라 했습니다."
   },
   {
     step: "1단계: 내용 확인 (난이도: 하)",
@@ -208,15 +208,15 @@ const quizData = [
   {
     step: "2단계: 미덕 및 공감 (난이도: 중)",
     type: "MULTIPLE",
-    question: "재이가 소연이의 진짜 글을 훔쳐 쓸 수 있었던 결정적인 사건은 무엇일까요?",
+    question: "전학온 소연이가 주인공 소연이의 진짜 글을 훔쳐 쓸 수 있었던 결정적인 사건은 무엇일까요?",
     choices: [
       "소연이가 일기장을 교실 책상 위에 두고 가버려서",
-      "소연이가 재이에게 자신의 글짓기 공책을 빌려주어서",
-      "재이가 소연이의 가방을 몰래 열고 공책을 훔쳐서",
-      "선생님이 소연이의 공책을 재이에게 심부름으로 주어서"
+      "소연이가 전학온 소연이에게 자신의 글짓기 공책을 빌려주어서",
+      "전학온 소연이가 주인공 소연이의 가방을 몰래 열고 공책을 훔쳐서",
+      "선생님이 소연이의 공책을 전학온 소연이에게 심부름으로 주어서"
     ],
     answer: "2",
-    explanation: "소연이가 재이에게 보여주거나 빌려준 공책의 글을 재이가 허락 없이 똑같이 베껴 썼습니다."
+    explanation: "소연이가 전학온 소연이에게 보여주거나 빌려준 공책의 글을 전학온 소연이가 허락 없이 똑같이 베껴 썼습니다."
   },
   {
     step: "2단계: 미덕 및 공감 (난이도: 중)",
@@ -229,7 +229,7 @@ const quizData = [
   {
     step: "2단계: 미덕 및 공감 (난이도: 중)",
     type: "MULTIPLE",
-    question: "재이가 늦잠 때문에 지각을 하자, 은진이는 선생님께 재이가 어떤 이유로 늦었다며 거짓말을 해주었나요?",
+    question: "전학온 소연이가 늦잠 때문에 지각을 하자, 은진이는 선생님께 전학온 소연이가 어떤 이유로 늦었다며 거짓말을 해주었나요?",
     choices: [
       "아침에 늦잠을 깊게 자서",
       "등교길에 교통사고가 나서",
@@ -273,7 +273,7 @@ const quizData = [
     explanation: "겉모습과 거짓 무리보다 내 진짜 가치와 떳떳한 정직이 더욱 단단한 힘을 준다는 것을 배웠습니다."
   },
 
-  // 3단계: 가치 판단 (난이도: 상 - 주관식/토론) - 4문제
+  // 3단계: 가치 판단 (난이도: 상 - 주관식/토론) - 2문제
   {
     step: "3단계: 가치 판단 (난이도: 상 - 주관식)",
     type: "DISCUSSION",
@@ -285,23 +285,7 @@ const quizData = [
   {
     step: "3단계: 가치 판단 (난이도: 상 - 주관식)",
     type: "DISCUSSION",
-    question: "지각한 친구를 위해 \"아침에 아팠다\"고 거짓말해 주는 전학생의 행동은 진짜 우정을 위한 '배려'일까요, 아니면 친구를 망치는 '잘못된 거짓말'일까요? 여러분의 의견을 써 봅시다.",
-    choices: [],
-    answer: "[생각 나누기 문제]",
-    explanation: "난처한 상황을 구해준 고마운 행동이라는 의견과, 정직을 어긴 거짓 배려는 신뢰를 해친다는 의견 중 자신의 이유를 설명합니다."
-  },
-  {
-    step: "3단계: 가치 판단 (난이도: 상 - 주관식)",
-    type: "DISCUSSION",
-    question: "재이 무리에 끼기 위해 눈치 보며 틴트를 바르던 시절의 소연이의 마음과, 모든 진실을 밝힌 후 주희와 단짝이 되어 떡볶이를 먹으러 가는 소연이의 감정은 어떻게 다를지 비교해 보세요.",
-    choices: [],
-    answer: "[생각 나누기 문제]",
-    explanation: "눈치 보며 불안했던 겉치레 우정보다, 솔직하게 마음을 열고 얻은 떳떳하고 편안한 진심의 우정을 대조하여 느껴봅니다."
-  },
-  {
-    step: "3단계: 가치 판단 (난이도: 상 - 주관식)",
-    type: "DISCUSSION",
-    question: "이 책의 제목이 '도둑맞은 김소연'인 진짜 이유는 무엇일까요? 재이에게 빼앗긴 것이 소연이의 '글' 이외에 또 무엇이 있었을지 생각해 봅시다.",
+    question: "이 책의 제목이 '도둑맞은 김소연'인 진짜 이유는 무엇일까요? 전학온 소연이에게 빼앗긴 것이 주인공 소연이의 '글' 이외에 또 무엇이 있었을지 생각해 봅시다.",
     choices: [],
     answer: "[생각 나누기 문제]",
     explanation: "단순히 종이에 적힌 글뿐만 아니라, 남의 기준에 맞추느라 빼앗겼던 소연이 고유의 '자아'와 '정직한 진짜 내 모습'을 의미함을 깨닫는 고차원적 질문입니다."
@@ -1423,3 +1407,361 @@ function sendStudentMessage(payload) {
     mqttClient.publish(`kimsoyeon/room/${roomCode}/status`, JSON.stringify(payload));
   }
 }
+
+// ==========================================
+// 11. ESCAPE ROOM - 고민 해결 방탈출
+// ==========================================
+const escapeStages = [
+  {
+    title: "1단계: 글을 도둑맞다!",
+    chat: [
+      { from: "soyeon", text: "어... 이 글 어디서 많이 봤는데? 내가 쓴 글이잖아!!!" },
+      { from: "friend", text: "소연아, 저 아이가 네 글을 베꼈다고? 정말??" },
+      { from: "soyeon", text: "어떻게 해야 할지 모르겠어. 무서워서 말도 못하겠고..." }
+    ],
+    question: "소연이는 어떻게 행동하는 것이 가장 바람직할까요?",
+    choices: [
+      { text: "🤐 그냥 모른 척하고 넘어간다.", correct: false, feedback: "😟 모른 척하면 더 억울하고, 상대방도 잘못된 행동이 옳다고 생각할 수 있어요. 용기 있게 말하는 것이 중요해요!" },
+      { text: "😤 당장 큰 소리로 네가 도둑이야! 라고 외친다.", correct: false, feedback: "😬 감정적으로 행동하면 오히려 오해를 살 수 있어요. 차분하게 사실을 알리는 것이 더 효과적이에요." },
+      { text: "✋ 선생님이나 믿을 수 있는 친구에게 사실을 조용히 알린다.", correct: true, feedback: "💛 잘했어요! 혼자 해결하기 어려울 땐 믿을 수 있는 어른이나 친구에게 도움을 요청하는 것이 용기 있는 행동이에요." }
+    ]
+  },
+  {
+    title: "2단계: 무리에 끼고 싶다",
+    chat: [
+      { from: "friend", text: "소연아, 같이 틴트 바를래? 이게 요즘 유행이야~" },
+      { from: "soyeon", text: "난 화장 별로 안 좋아하는데... 하지만 끼고 싶기도 하고..." },
+      { from: "soyeon", text: "어떻게 하지? 억지로 따라 해야 하나?" }
+    ],
+    question: "소연이는 어떻게 하는 것이 좋을까요?",
+    choices: [
+      { text: "💄 싫어도 억지로 화장을 따라 해서 무리에 낀다.", correct: false, feedback: "😔 나를 잃어가면서 무리에 끼는 건 진짜 우정이 아니에요. 자신의 모습을 지키는 것도 중요해요." },
+      { text: "🙋 솔직하게 '나는 화장이 별로야. 하지만 같이 놀고 싶어!'라고 말한다.", correct: true, feedback: "✨ 훌륭해요! 자신의 생각을 솔직하게 표현하면서도 우정을 원한다는 마음을 전하는 것이 가장 현명한 방법이에요." },
+      { text: "😒 말없이 자리를 피하고 혼자 있는다.", correct: false, feedback: "🙁 관계를 피하기만 하면 더 외로워질 수 있어요. 솔직한 소통이 진정한 친구를 만드는 방법이에요." }
+    ]
+  },
+  {
+    title: "3단계: 거짓말 부탁",
+    chat: [
+      { from: "friend", text: "소연아, 나 오늘 지각했는데 선생님한테 아팠다고 해줘! 제발~" },
+      { from: "soyeon", text: "거짓말은 싫은데... 친구를 도와야 하는 건지..." }
+    ],
+    question: "소연이는 어떻게 하는 것이 바람직할까요?",
+    choices: [
+      { text: "🤥 친구가 부탁했으니까 아팠다고 거짓말해 준다.", correct: false, feedback: "😬 친구를 위한 거짓말은 나쁜 습관을 키우고 선생님의 신뢰를 잃게 해요. 진정한 도움이 아니에요." },
+      { text: "✅ 친구에게 '거짓말은 못 해. 그냥 솔직하게 말해'라고 말한다.", correct: true, feedback: "🌟 정직이 최선이에요! 잘못을 숨기면 더 큰 문제가 생겨요. 진짜 친구는 서로 바른 길로 이끌어 줘요." },
+      { text: "😶 어떤 말도 안 하고 그냥 침묵한다.", correct: false, feedback: "🤔 침묵도 결국 거짓에 협력하는 셈이 될 수 있어요. 용기 있게 솔직한 말 한마디가 필요해요." }
+    ]
+  },
+  {
+    title: "4단계: 비밀을 들켰다",
+    chat: [
+      { from: "soyeon", text: "주희야... 사실 나 요즘 눈치 보면서 틴트도 발랐어. 진짜 나답지 않았던 것 같아." },
+      { from: "friend", text: "소연아... 나도 알고 있었어. 요즘 좀 달라 보였거든. 괜찮아?" },
+      { from: "soyeon", text: "창피하고 미안해. 어떻게 해야 하지?" }
+    ],
+    question: "소연이는 어떻게 하는 것이 좋을까요?",
+    choices: [
+      { text: "🙈 그냥 없었던 일로 하고 모른 척한다.", correct: false, feedback: "😕 모른 척하면 마음이 더 무거워져요. 솔직하게 털어놓는 것이 진정한 친구 관계를 만들어요." },
+      { text: "💬 솔직하게 미안하다고 사과하고 앞으로 나답게 살겠다고 말한다.", correct: true, feedback: "💖 잘했어요! 용기 있게 사과하고 자신의 모습으로 돌아가겠다고 선언하는 것이 가장 아름다운 행동이에요." },
+      { text: "😢 부끄러워서 며칠 동안 학교를 안 간다.", correct: false, feedback: "🙁 회피는 문제를 해결하지 못해요. 용기 내서 친구에게 솔직하게 말하면 오히려 관계가 더 깊어질 수 있어요." }
+    ]
+  },
+  {
+    title: "5단계: 진짜 나를 찾아서",
+    chat: [
+      { from: "soyeon", text: "주희야, 내가 쓴 글 진짜야. 틴트도 내 진짜 모습이 아니었고." },
+      { from: "friend", text: "소연아, 네가 글 잘 쓰는 거 알아! 그게 진짜 소연이지~" },
+      { from: "soyeon", text: "앞으로 어떻게 살아가야 진짜 나를 찾을 수 있을까?" }
+    ],
+    question: "소연이가 '진짜 나'를 찾기 위해 가장 중요한 것은?",
+    choices: [
+      { text: "🏆 남들보다 더 많은 것을 갖고 더 유명해지는 것", correct: false, feedback: "😮 외적인 것들은 진짜 나를 드러내지 못해요. 내면의 가치와 진심이 훨씬 더 중요해요." },
+      { text: "💎 남의 눈치보다 내 가치와 정직함을 지키며 사는 것", correct: true, feedback: "🎉 완벽해요! 남의 기준이 아닌 나만의 가치와 정직한 모습으로 살아갈 때 진짜 나를 찾을 수 있어요. 축하해요, 탈출 성공!" },
+      { text: "😎 무조건 인기 있는 무리에 속하는 것", correct: false, feedback: "🙈 인기만 따라가면 나 자신을 잃어버려요. 진정한 가치는 겉모습이나 인기가 아닌 내면에 있어요." }
+    ]
+  }
+];
+
+let currentEscapeStage = 0;
+
+function initEscapeRoom() {
+  const btnStart = document.getElementById('btn-escape-start');
+  if (btnStart) {
+    btnStart.addEventListener('click', startEscapeGame);
+  }
+  const btnNext = document.getElementById('btn-escape-next');
+  if (btnNext) {
+    btnNext.addEventListener('click', nextEscapeStage);
+  }
+}
+
+function startEscapeGame() {
+  currentEscapeStage = 0;
+  document.getElementById('escape-intro').classList.add('hidden');
+  document.getElementById('escape-game').classList.remove('hidden');
+  document.getElementById('escape-clear').classList.add('hidden');
+  loadEscapeStage(0);
+}
+
+function loadEscapeStage(idx) {
+  const stage = escapeStages[idx];
+  document.getElementById('escape-stage-badge').textContent = stage.title;
+
+  // Update lock icons
+  for (let i = 1; i <= 5; i++) {
+    const lockEl = document.getElementById(`elock-${i}`);
+    if (lockEl) {
+      lockEl.className = i <= idx ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock';
+      lockEl.style.color = i <= idx ? '#10b981' : '';
+    }
+  }
+
+  // Chat bubbles
+  const chatArea = document.getElementById('escape-chat-area');
+  chatArea.innerHTML = '';
+  stage.chat.forEach((msg, i) => {
+    setTimeout(() => {
+      const bubble = document.createElement('div');
+      bubble.className = `escape-bubble ${msg.from === 'soyeon' ? 'bubble-soyeon' : 'bubble-friend'}`;
+      const label = msg.from === 'soyeon' ? '😟 소연이' : '👧 친구';
+      bubble.innerHTML = `<span class="bubble-name">${label}</span><p>${msg.text}</p>`;
+      chatArea.appendChild(bubble);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }, i * 600);
+  });
+
+  // Choices
+  const choicesEl = document.getElementById('escape-choices');
+  choicesEl.innerHTML = `<p class="escape-q-label"><i class="fa-solid fa-question-circle"></i> ${stage.question}</p>`;
+
+  stage.choices.forEach((choice, idx2) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-escape-choice';
+    btn.innerHTML = choice.text;
+    btn.addEventListener('click', () => handleEscapeChoice(choice));
+    choicesEl.appendChild(btn);
+  });
+
+  // Hide result
+  document.getElementById('escape-result').classList.add('hidden');
+  document.getElementById('escape-scene').style.display = 'block';
+}
+
+function handleEscapeChoice(choice) {
+  sounds.init();
+  const resultEl = document.getElementById('escape-result');
+  const resultIcon = document.getElementById('escape-result-icon');
+  const resultTitle = document.getElementById('escape-result-title');
+  const resultDesc = document.getElementById('escape-result-desc');
+  const btnNext = document.getElementById('btn-escape-next');
+
+  document.getElementById('escape-scene').style.display = 'none';
+  resultEl.classList.remove('hidden');
+
+  if (choice.correct) {
+    sounds.playCorrect();
+    resultIcon.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#10b981;font-size:3rem;"></i>';
+    resultTitle.textContent = '✅ 올바른 선택!';
+    resultDesc.textContent = choice.feedback;
+    btnNext.style.display = 'inline-flex';
+
+    // Update progress
+    const cleared = currentEscapeStage + 1;
+    const pct = (cleared / 5) * 100;
+    document.getElementById('escape-progress-bar').style.width = pct + '%';
+    document.getElementById('escape-stage-text').textContent = `${cleared} / 5 단계 클리어`;
+  } else {
+    sounds.playWrong();
+    resultIcon.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#ff6b6b;font-size:3rem;"></i>';
+    resultTitle.textContent = '❌ 다시 생각해봐요!';
+    resultDesc.textContent = choice.feedback;
+    btnNext.style.display = 'none';
+
+    // Allow retry
+    setTimeout(() => {
+      resultEl.classList.add('hidden');
+      document.getElementById('escape-scene').style.display = 'block';
+    }, 2500);
+  }
+}
+
+function nextEscapeStage() {
+  sounds.init();
+  currentEscapeStage++;
+
+  // Lock icon for current cleared
+  const lockEl = document.getElementById(`elock-${currentEscapeStage}`);
+  if (lockEl) {
+    lockEl.className = 'fa-solid fa-lock-open';
+    lockEl.style.color = '#10b981';
+  }
+
+  if (currentEscapeStage >= escapeStages.length) {
+    // All cleared
+    document.getElementById('escape-game').classList.add('hidden');
+    document.getElementById('escape-clear').classList.remove('hidden');
+    sounds.playBell();
+  } else {
+    loadEscapeStage(currentEscapeStage);
+  }
+}
+
+function resetEscapeGame() {
+  currentEscapeStage = 0;
+  document.getElementById('escape-clear').classList.add('hidden');
+  document.getElementById('escape-game').classList.add('hidden');
+  document.getElementById('escape-intro').classList.remove('hidden');
+  document.getElementById('escape-progress-bar').style.width = '0%';
+  document.getElementById('escape-stage-text').textContent = '0 / 5 단계 클리어';
+  for (let i = 1; i <= 5; i++) {
+    const lockEl = document.getElementById(`elock-${i}`);
+    if (lockEl) {
+      lockEl.className = 'fa-solid fa-lock';
+      lockEl.style.color = '';
+    }
+  }
+}
+
+// ==========================================
+// 12. VALUES LINE - 가치 수직선 토론
+// ==========================================
+const valuesQuestions = [
+  "소연이가 글을 베꼈다는 사실을 선생님께 바로 말하는 것이 옳다.",
+  "친구를 위해 선의의 거짓말을 하는 것은 진정한 우정이다.",
+  "반 친구들에게 인기를 얻기 위해 나답지 않은 행동을 할 수 있다.",
+  "잘못을 저지른 뒤 용기 있게 사과하는 것은 쉬운 일이다.",
+  "남의 글이나 작품을 허락 없이 쓰는 것은 큰 잘못이다.",
+  "소연이의 진짜 친구는 주희이다."
+];
+
+let currentValuesQuestion = 0;
+let valuesResponses = [];
+let selectedScore = 0;
+
+const COLORS = ['#ff6b6b','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316'];
+
+function initValuesLine() {
+  // Question buttons
+  const qBtns = document.getElementById('values-q-buttons');
+  if (!qBtns) return;
+
+  valuesQuestions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-values-q';
+    btn.textContent = `Q${i + 1}`;
+    btn.title = q;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.btn-values-q').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentValuesQuestion = i;
+      document.getElementById('values-question-text').textContent = q;
+      valuesResponses = [];
+      renderValuesLine();
+      renderValuesResponsesList();
+    });
+    qBtns.appendChild(btn);
+  });
+
+  // Score buttons
+  const scoreBtns = document.querySelectorAll('.btn-score-select');
+  scoreBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      scoreBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedScore = parseInt(btn.dataset.score);
+    });
+  });
+
+  // Add response
+  const btnAdd = document.getElementById('btn-values-add');
+  if (btnAdd) {
+    btnAdd.addEventListener('click', () => {
+      const nameInput = document.getElementById('values-name-input');
+      const name = nameInput.value.trim();
+      if (!name) { alert('이름을 입력하세요!'); return; }
+      if (!selectedScore) { alert('1~5점 중 선택하세요!'); return; }
+
+      const color = COLORS[valuesResponses.length % COLORS.length];
+      valuesResponses.push({ name, score: selectedScore, color });
+
+      nameInput.value = '';
+      selectedScore = 0;
+      scoreBtns.forEach(b => b.classList.remove('active'));
+
+      sounds.playTick();
+      renderValuesLine();
+      renderValuesResponsesList();
+    });
+  }
+
+  // Clear all
+  const btnClear = document.getElementById('btn-values-clear');
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      if (confirm('등록된 모든 의견을 지우겠습니까?')) {
+        valuesResponses = [];
+        renderValuesLine();
+        renderValuesResponsesList();
+      }
+    });
+  }
+}
+
+function renderValuesLine() {
+  const lineEl = document.getElementById('values-line');
+  if (!lineEl) return;
+
+  // Remove existing dots (keep ticks)
+  lineEl.querySelectorAll('.values-dot').forEach(el => el.remove());
+
+  // Group by score
+  const groups = {1:[], 2:[], 3:[], 4:[], 5:[]};
+  valuesResponses.forEach(r => groups[r.score].push(r));
+
+  Object.keys(groups).forEach(score => {
+    const items = groups[score];
+    items.forEach((r, rowIdx) => {
+      const dot = document.createElement('div');
+      dot.className = 'values-dot';
+      // Position: score 1~5 maps to 10%~90%
+      const pct = ((parseInt(score) - 1) / 4) * 80 + 10;
+      dot.style.left = `${pct}%`;
+      dot.style.bottom = `${45 + rowIdx * 38}px`;
+      dot.style.background = r.color;
+      dot.innerHTML = `<span>${r.name}</span>`;
+      dot.title = `${r.name}: ${score}점`;
+      lineEl.appendChild(dot);
+    });
+  });
+}
+
+function renderValuesResponsesList() {
+  const listEl = document.getElementById('values-responses-list');
+  if (!listEl) return;
+
+  if (valuesResponses.length === 0) {
+    listEl.innerHTML = '<p class="values-empty-msg">&#128161; 위에서 질문을 선택하고 이름과 점수를 등록하세요!</p>';
+    return;
+  }
+
+  listEl.innerHTML = '';
+  [...valuesResponses].reverse().forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'values-response-item';
+    item.innerHTML = `
+      <span class="values-response-dot" style="background:${r.color};"></span>
+      <span class="values-response-name">${r.name}</span>
+      <span class="values-response-score">${r.score}점</span>
+      <div class="values-bar-fill" style="width:${(r.score/5)*100}%;background:${r.color};"></div>
+    `;
+    listEl.appendChild(item);
+  });
+}
+
+// Initialization on DOM ready - extend existing DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  initEscapeRoom();
+  initValuesLine();
+});
+

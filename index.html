@@ -53,8 +53,8 @@
       </div>
       <nav class="app-nav">
         <button class="nav-btn active" data-target="goldenbell"><i class="fa-solid fa-bell"></i> 모둠 협동 골든벨</button>
-        <button class="nav-btn" data-target="escaperoom"><i class="fa-solid fa-key"></i> 고민 해결 방탈출 (준비중)</button>
-        <button class="nav-btn" data-target="valuesline"><i class="fa-solid fa-arrows-left-right"></i> 가치 수직선 토론 (준비중)</button>
+        <button class="nav-btn" data-target="escaperoom"><i class="fa-solid fa-key"></i> 고민 해결 방탈출</button>
+        <button class="nav-btn" data-target="valuesline"><i class="fa-solid fa-arrows-left-right"></i> 가치 수직선 토론</button>
       </nav>
     </header>
 
@@ -263,21 +263,116 @@
         </div>
       </section>
 
-      <!-- SECTION 2: ESCAPE ROOM (PLACEHOLDER) -->
+      <!-- SECTION 2: ESCAPE ROOM - 고민 해결 방탈출 -->
       <section id="escaperoom" class="tab-content">
-        <div class="placeholder-card card">
-          <i class="fa-solid fa-lock-open placeholder-icon"></i>
-          <h2>소연이의 고민 해결! 톡방 방탈출 게임</h2>
-          <p>이 기능은 현재 다음 개발 단계로 예정되어 있습니다. 골든벨 게임을 먼저 체험해보세요!</p>
+        <div class="escape-intro card" id="escape-intro">
+          <div class="escape-intro-badge"><i class="fa-solid fa-key"></i></div>
+          <h2>소연이의 고민 해결 방탈출</h2>
+          <p class="escape-intro-desc">소연이가 마주한 5가지 고민 상황을 해결하면서 탈출하세요!<br>각 단계마다 올바른 선택을 하면 다음 단계로 진행됩니다.</p>
+          <div class="escape-progress-bar-wrap">
+            <div class="escape-progress-bar" id="escape-progress-bar"></div>
+          </div>
+          <p class="escape-stage-text" id="escape-stage-text">0 / 5 단계 클리어</p>
+          <button class="btn-escape-start" id="btn-escape-start"><i class="fa-solid fa-play"></i> 방탈출 시작!</button>
+        </div>
+
+        <!-- 진행 중 화면 -->
+        <div class="escape-game hidden" id="escape-game">
+          <div class="escape-header">
+            <span class="badge" id="escape-stage-badge">1단계</span>
+            <div class="escape-lock-icons" id="escape-lock-icons">
+              <i class="fa-solid fa-lock" id="elock-1"></i>
+              <i class="fa-solid fa-lock" id="elock-2"></i>
+              <i class="fa-solid fa-lock" id="elock-3"></i>
+              <i class="fa-solid fa-lock" id="elock-4"></i>
+              <i class="fa-solid fa-lock" id="elock-5"></i>
+            </div>
+          </div>
+          <div class="escape-scene card" id="escape-scene">
+            <div class="escape-chat-area" id="escape-chat-area">
+              <!-- 대화 버블 동적 생성 -->
+            </div>
+            <div class="escape-choices" id="escape-choices">
+              <!-- 선택지 동적 생성 -->
+            </div>
+          </div>
+          <div class="escape-result hidden card" id="escape-result">
+            <div class="escape-result-icon" id="escape-result-icon"></div>
+            <h3 id="escape-result-title">올바른 선택!</h3>
+            <p id="escape-result-desc"></p>
+            <button class="btn-escape-next" id="btn-escape-next"><i class="fa-solid fa-arrow-right"></i> 다음 단계로</button>
+          </div>
+        </div>
+
+        <!-- 클리어 화면 -->
+        <div class="escape-clear hidden card" id="escape-clear">
+          <div class="escape-clear-star">&#127775;</div>
+          <h2>탈출 성공!</h2>
+          <p>소연이의 5가지 고민을 모두 올바르게 해결했어요!<br>소연이는 이제 혼자가 아니랜다는 걸 알게 되었어요. 코</p>
+          <button class="btn-escape-start" onclick="resetEscapeGame()"><i class="fa-solid fa-rotate-left"></i> 다시 도전하기</button>
         </div>
       </section>
 
-      <!-- SECTION 3: VALUES LINE (PLACEHOLDER) -->
+      <!-- SECTION 3: VALUES LINE - 가치 수직선 토론 -->
       <section id="valuesline" class="tab-content">
-        <div class="placeholder-card card">
-          <i class="fa-solid fa-arrows-left-right placeholder-icon"></i>
-          <h2>네 마음을 보여줘! 가치 수직선 코너 게임</h2>
-          <p>이 기능은 현재 다음 개발 단계로 예정되어 있습니다. 골든벨 게임을 먼저 체험해보세요!</p>
+        <div class="values-container">
+          <!-- 상단: 설명 및 제어 -->
+          <div class="values-control card">
+            <div class="values-control-header">
+              <div>
+                <h2><i class="fa-solid fa-arrows-left-right text-amber"></i> 가치 수직선 토론</h2>
+                <p class="values-desc">소연이 이야기 속 질문에 대한 여러분의 생각을 표현해보세요! 표시할 질문을 선택하고 이름을 입력한 뒤 등록하세요.</p>
+              </div>
+              <div class="values-btns">
+                <button class="btn-primary" id="btn-values-clear"><i class="fa-solid fa-trash-can"></i> 전체 지우기</button>
+              </div>
+            </div>
+            <div class="values-question-select">
+              <label>토론 질문 선택:</label>
+              <div class="values-q-buttons" id="values-q-buttons"></div>
+            </div>
+            <div class="values-current-question card" id="values-current-question">
+              <i class="fa-solid fa-question-circle text-amber"></i>
+              <span id="values-question-text">질문을 선택하세요</span>
+            </div>
+          </div>
+
+          <!-- 수직선 -->
+          <div class="values-line-wrap card">
+            <div class="values-axis">
+              <span class="values-pole values-pole-left"><i class="fa-solid fa-thumbs-down"></i><br>전혀 아니다</span>
+              <div class="values-line" id="values-line">
+                <div class="values-ticks">
+                  <span class="tick">1</span><span class="tick">2</span><span class="tick">3</span><span class="tick">4</span><span class="tick">5</span>
+                </div>
+                <!-- 동그라미들 동적 생성 -->
+              </div>
+              <span class="values-pole values-pole-right"><i class="fa-solid fa-thumbs-up"></i><br>증매 제대로</span>
+            </div>
+            <!-- 입력 폼 -->
+            <div class="values-input-row">
+              <input type="text" id="values-name-input" class="values-input" placeholder="이름 입력 (예: 김이주)" maxlength="6">
+              <div class="values-score-select">
+                <label>1~5점 선택:</label>
+                <div class="values-score-btns" id="values-score-btns">
+                  <button class="btn-score-select" data-score="1">1</button>
+                  <button class="btn-score-select" data-score="2">2</button>
+                  <button class="btn-score-select" data-score="3">3</button>
+                  <button class="btn-score-select" data-score="4">4</button>
+                  <button class="btn-score-select" data-score="5">5</button>
+                </div>
+              </div>
+              <button class="btn-primary" id="btn-values-add"><i class="fa-solid fa-plus"></i> 등록</button>
+            </div>
+          </div>
+
+          <!-- 답변 목록 -->
+          <div class="values-responses-wrap card">
+            <h3><i class="fa-solid fa-list text-amber"></i> 등록된 의견</h3>
+            <div class="values-responses-list" id="values-responses-list">
+              <p class="values-empty-msg">&#128161; 위에서 질문을 선택하고 이름과 점수를 등록하세요!</p>
+            </div>
+          </div>
         </div>
       </section>
 
